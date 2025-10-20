@@ -6,7 +6,7 @@ import time
 @given(u'que ingreso al url del sistema')
 def step_impl(context):
     context.driver.get(context.url)
-    time.sleep(10)
+    time.sleep(1)
 
 @when(u'me dirijo a raíz /')
 def step_impl(context):

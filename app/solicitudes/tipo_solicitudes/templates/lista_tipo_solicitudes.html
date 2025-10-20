@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block contenido %}
+  <h1>Tipo de solicitudes</h1>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Descripción</th>
+      </tr>
+    </thead>
+    <tbody id="bodyTipoSolicitudes">
+      {% for tipo_solicitud in tipo_solicitudes  %}
+        <tr>
+          <td>{{tipo_solicitud.nombre}}</td>
+          <td>{{tipo_solicitud.descripcion}}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock contenido %}

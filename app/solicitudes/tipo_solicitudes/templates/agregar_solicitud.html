@@ -2,4 +2,10 @@
 
 {% block contenido %}
   <h1>Agregar tipo de solicitudes</h1>
+  <form method="post">
+    {% csrf_token %}
+    {{form.as_p}}
+    <button type="submit" class="btn btn-primary">Agregar</button>
+    <a href="#" class="btn btn-secondary">Cancelar</a>
+  </form>
 {% endblock contenido %}
