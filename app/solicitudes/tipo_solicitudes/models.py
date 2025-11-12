@@ -88,5 +88,4 @@ class SeguimientoSolicitud(models.Model):
     solicitud = models.ForeignKey(Solicitud, on_delete=models.CASCADE, related_name='seguimientos')
     fecha_creacion = models.DateTimeField(auto_now_add=True)
     observaciones = models.TextField(blank=True)
-    solicitud = models.ForeignKey(Solicitud, on_delete=models.CASCADE, related_name='seguimientos')
     estatus = models.CharField(max_length=1, choices=ESTATUS)
