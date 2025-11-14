@@ -1,0 +1,21 @@
+<h2>Mis solicitudes</h2>
+
+<table>
+    <tr>
+        <th>Folio</th>
+        <th>Tipo</th>
+        <th>Fecha</th>
+        <th>Acciones</th>
+    </tr>
+
+    {% for s in solicitudes %}
+    <tr>
+        <td>{{ s.folio }}</td>
+        <td>{{ s.tipo_solicitud.nombre }}</td>
+        <td>{{ s.fecha_creacion }}</td>
+        <td>
+            <a href="{% url 'detalle_solicitud' s.id %}">Ver detalle</a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>

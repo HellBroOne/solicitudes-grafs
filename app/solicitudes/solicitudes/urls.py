@@ -6,4 +6,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('tipo-solicitud/', include('tipo_solicitudes.urls')),
     path('', bienvenida, name='bienvenida'),
+    
 ]
