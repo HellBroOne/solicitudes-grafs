@@ -279,19 +279,39 @@ def metricas(request):
 
     return render(request, "tipo_solicitudes/metricas.html", context)
 
+def lista_formularios(request):
+    context = {
+        'formularios': FormularioSolicitud.objects.all(),
+        'resultado': FormularioSolicitud.objects.all().count
+    }
+    return render(request, 'lista_formulario.html', context)
+
 def generar_folio_unico():
     import uuid
     return f"FOLIO-{uuid.uuid4().hex[:8].upper()}"
 
-def crear_formulario(request):
+def crear_o_editar_formulario(request, pk=None):
+    instancia = None
+    if pk:
+        instancia = get_object_or_404(FormularioSolicitud, pk=pk)
+
     if request.method == 'POST':
-        form = FormFormularioSolicitud(request.POST)
+        form = FormFormularioSolicitud(request.POST, instance=instancia)
+        
         if form.is_valid():
             form.save()
-            return redirect('crear_formulario')
+            return redirect('listar_formularios')
     else:
-        form = FormFormularioSolicitud()
+        form = FormFormularioSolicitud(instance=instancia)
+        
+    if instancia:
+        titulo = "Editar Formulario de Solicitud"
+    else:
+        titulo = "Crear Nuevo Formulario de Solicitud"
+        
     context = {
-        'form': form
+        'form': form,
+        'titulo': titulo,
+        'instancia': instancia,
     }
     return render(request, 'crear_formulario_solicitud.html', context)
