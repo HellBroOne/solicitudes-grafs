@@ -55,7 +55,7 @@ def step_ver_usuario_en_lista(context, username):
     assert username in content
 
 
-@given('que existe un usuario con username "{username}" y email "{email}"')
+@given('que existe previamente un usuario con username "{username}" y email "{email}"')
 def step_crear_usuario_con_email(context, username, email):
     Usuario.objects.create_user(
         username=username,
@@ -128,7 +128,7 @@ def step_verificar_first_name(context, username, nombre):
     assert usuario.first_name == nombre
 
 
-@given('que existe un usuario con username "{username}" y rol "{rol}"')
+@given('que existe un usuario registrado con username "{username}" y rol "{rol}"')
 def step_crear_usuario_con_rol(context, username, rol):
     Usuario.objects.create_user(
         username=username,
@@ -146,7 +146,7 @@ def step_verificar_rol(context, username, rol):
     assert usuario.rol == rol
 
 
-@given('que existe un usuario con username "{username}" y está activo')
+@given('que existe previamente un usuario con username "{username}" y está activo')
 def step_crear_usuario_activo(context, username):
     Usuario.objects.create_user(
         username=username,
@@ -165,7 +165,7 @@ def step_verificar_inactivo(context, username):
     assert not usuario.is_active
 
 
-@given('que existe un usuario con username "{username}"')
+@given('que existe previamente un usuario con username "{username}"')
 def step_crear_usuario_simple(context, username):
     Usuario.objects.create_user(
         username=username,
@@ -202,3 +202,34 @@ def step_no_ver_boton_eliminar_propio(context):
 @when('el usuario intenta acceder a la página de gestión de usuarios')
 def step_intentar_acceder_gestion(context):
     context.response = context.client.get(reverse('solicitudes_app:lista_usuarios'), follow=True)
+
+
+@given('que existen los siguientes usuarios en el sistema:')
+def step_crear_multiples_usuarios(context):
+    for row in context.table:
+        Usuario.objects.create_user(
+            username=row['username'],
+            email=row['email'],
+            password='testpass123',
+            first_name='Test',
+            last_name='User',
+            rol=row['rol']
+        )
+
+
+@given('que existe un usuario con username "{username}" y email "{email}"')
+def step_crear_usuario_username_email(context, username, email):
+    Usuario.objects.create_user(
+        username=username,
+        email=email,
+        password='testpass123',
+        first_name='Test',
+        last_name='User',
+        rol='alumno'
+    )
+
+
+@given('el usuario "{username}" está autenticado')
+def step_autenticar_usuario_generico(context, username):
+    usuario = Usuario.objects.get(username=username)
+    context.client.force_login(usuario)

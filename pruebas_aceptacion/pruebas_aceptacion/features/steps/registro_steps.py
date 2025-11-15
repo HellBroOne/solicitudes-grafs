@@ -12,13 +12,13 @@ def step_visitar_registro(context):
     context.form_data = {}
 
 
-@when('completa el formulario con los siguientes datos de alumno')
+@when('completa el formulario con los siguientes datos de alumno:')
 def step_completar_formulario_alumno(context):
     for row in context.table:
         context.form_data[row['Campo']] = row['Valor']
 
 
-@when('completa el formulario con los siguientes datos de administrador')
+@when('completa el formulario con los siguientes datos de administrador:')
 def step_completar_formulario_admin(context):
     for row in context.table:
         context.form_data[row['Campo']] = row['Valor']
@@ -44,7 +44,7 @@ def step_existe_usuario(context, username):
     assert Usuario.objects.filter(username=username).exists()
 
 
-@then('existe un usuario en la base de datos con username "{username}" y rol "{rol}"')
+@then('existe en la base de datos un usuario con username "{username}" y rol "{rol}"')
 def step_existe_usuario_con_rol(context, username, rol):
     usuario = Usuario.objects.get(username=username)
     assert usuario.rol == rol
