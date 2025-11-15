@@ -26,7 +26,8 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='tiposolicitud',
             name='responsable',
-            field=models.CharField(choices=[('1', 'Control escolar'), ('2', 'Responsable de programa'), ('3', 'Responsable de tutorías'), ('4', 'Director')], default='1', max_length=1),
+            field=models.CharField(choices=[('1', 'Control escolar'), ('2', 'Responsable de programa'), ('3', 'Responsable de tutorías'), ('4', 'Director')], default=0, max_length=1),
+            preserve_default=False,
         ),
         migrations.CreateModel(
             name='FormularioSolicitud',
