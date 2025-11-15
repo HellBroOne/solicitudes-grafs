@@ -10,7 +10,7 @@ RESPOSABLES = [
 class TipoSolicitud(models.Model):
     nombre = models.CharField(max_length=150)
     descripcion = models.CharField(max_length=350)
-    responsable = models.CharField(max_length=1, choices=RESPOSABLES)
+    responsable = models.CharField(max_length=1, choices=RESPOSABLES, null=True, blank=True)
 
 
     def __str__(self):
@@ -25,14 +25,15 @@ class FormularioSolicitud(models.Model):
         return f"Formulario: {self.nombre}"
 
 
-    TIPO_CAMPO = [
+TIPO_CAMPO = [
         ('text', 'Texto corto'),
         ('textarea', 'Texto largo'),
         ('number', 'Número'),
         ('date', 'Fecha'),
         ('select', 'Selección'),
         ('file', 'Archivo'),
-    ]
+]
+
 class CampoFormulario(models.Model):
 
     formulario = models.ForeignKey(FormularioSolicitud, on_delete=models.CASCADE, related_name='campos')
