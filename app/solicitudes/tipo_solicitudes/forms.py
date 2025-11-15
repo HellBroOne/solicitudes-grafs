@@ -19,7 +19,7 @@ class FormFormularioSolicitud(forms.ModelForm):
 class FormCampoFormulario(forms.ModelForm):
     class Meta:
         model = CampoFormulario
-        fields = ['nombre', 'etiqueta', 'tipo', 'requerido', 'opciones', 'cantidad_archivos', 'orden']
+        fields = ['formulario', 'nombre', 'etiqueta', 'tipo', 'requerido', 'opciones', 'cantidad_archivos', 'orden']
         labels = {
             'nombre': 'Nombre interno del campo',
             'etiqueta': 'Texto visible para el usuario',
@@ -34,6 +34,7 @@ class FormCampoFormulario(forms.ModelForm):
         # El formulario necesita saber qué formularioSolicitud está editando
         self.formulario = kwargs.pop("formulario", None)
         super().__init__(*args, **kwargs)
+        self.fields['formulario'].widget = forms.HiddenInput()
 
     def clean_orden(self):
         orden = self.cleaned_data.get("orden")
