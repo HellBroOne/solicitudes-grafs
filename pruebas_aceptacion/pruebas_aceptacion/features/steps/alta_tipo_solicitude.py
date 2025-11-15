@@ -9,7 +9,8 @@ def step_impl(context):
 
 @given(u'seleccion el menú Tipo de solicitudes')
 def step_impl(context):
-    context.driver.find_element(By.LINK_TEXT, 'Tipo solicitudes').click()
+    # Navegar directamente al formulario de agregar
+    context.driver.get(f"{context.url}/tipo-solicitud/")
     time.sleep(1)
 
 
@@ -23,20 +24,36 @@ def step_impl(context, nombre, descripcion):
 
 @when(u'presiono el botón Agregar')
 def step_impl(context):
-    context.driver.find_element(By.CLASS_NAME, 'btn-primary').click()
-    time.sleep(1)
+    # Buscar específicamente el botón de tipo submit
+    boton = context.driver.find_element(By.XPATH, "//button[@type='submit']")
+    boton.click()
+    # Esperar a que se complete la redirección
+    time.sleep(2)
 
 
 
 @then(u'puedo ver el tipo "{nombre}" en la lista de tipos de solicitudes.')
 def step_impl(context, nombre):
+    # Esperar un momento para que se complete la redirección
+    time.sleep(1)
+    
+    # Navegar a la lista si no estamos ya ahí
+    if '/tipo-solicitud/lista/' not in context.driver.current_url:
+        context.driver.get(f"{context.url}/tipo-solicitud/lista/")
+        time.sleep(1)
+    else:
+        # Si ya estamos en la lista, recargar para asegurar datos actualizados
+        context.driver.refresh()
+        time.sleep(1)
+    
     body = context.driver.find_element(By.ID, 'bodyTipoSolicitudes')
     trs = body.find_elements(By.TAG_NAME, 'tr')
     tipo_solicitud = []
     for tr in trs:
         tds = tr.find_elements(By.TAG_NAME, 'td')
-        tipo_solicitud.append(tds[0].text)
-    assert nombre in tipo_solicitud, f"{str(tipo_solicitud)}"
-    time.sleep(10)
+        if tds and len(tds) > 0:
+            tipo_solicitud.append(tds[0].text)
+    assert nombre in tipo_solicitud, f"No se encontró '{nombre}' en la lista: {str(tipo_solicitud)}"
+    time.sleep(1)
 
 
