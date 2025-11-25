@@ -81,13 +81,6 @@ class ArchivoAdjunto(models.Model):
     def __str__(self):
         return f"Archivo {self.archivo.name}"
 
-ESTATUS = [
-    ('1', 'Creada'),
-    ('2', 'En proceso'),
-    ('3', 'Terminada'),
-    ('4', 'Cancelada'),
-]
-
 class SeguimientoSolicitud(models.Model):
     solicitud = models.ForeignKey(Solicitud, on_delete=models.CASCADE, related_name='seguimientos')
     fecha_creacion = models.DateTimeField(auto_now_add=True)
