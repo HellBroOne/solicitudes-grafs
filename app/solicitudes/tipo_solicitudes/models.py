@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.conf import settings
 
 RESPOSABLES = [
     ('1', 'Control escolar'),
@@ -7,11 +7,11 @@ RESPOSABLES = [
     ('3', 'Responsable de tutorías'),
     ('4', 'Director'),
 ]
+
 class TipoSolicitud(models.Model):
     nombre = models.CharField(max_length=150)
     descripcion = models.CharField(max_length=350)
-    responsable = models.CharField(max_length=1, choices=RESPOSABLES, null=True, blank=True)
-
+    responsable = models.CharField(max_length=1, choices=RESPOSABLES, default='1')
 
     def __str__(self):
         return self.nombre
@@ -24,18 +24,16 @@ class FormularioSolicitud(models.Model):
     def __str__(self):
         return f"Formulario: {self.nombre}"
 
-
 TIPO_CAMPO = [
-        ('text', 'Texto corto'),
-        ('textarea', 'Texto largo'),
-        ('number', 'Número'),
-        ('date', 'Fecha'),
-        ('select', 'Selección'),
-        ('file', 'Archivo'),
+    ('text', 'Texto corto'),
+    ('textarea', 'Texto largo'),
+    ('number', 'Número'),
+    ('date', 'Fecha'),
+    ('select', 'Selección'),
+    ('file', 'Archivo'),
 ]
 
 class CampoFormulario(models.Model):
-
     formulario = models.ForeignKey(FormularioSolicitud, on_delete=models.CASCADE, related_name='campos')
     nombre = models.CharField(max_length=100)
     etiqueta = models.CharField(max_length=150)
@@ -43,20 +41,27 @@ class CampoFormulario(models.Model):
     requerido = models.BooleanField(default=True)
     opciones = models.TextField(blank=True, help_text="Usar comas para separar opciones (solo para tipo 'select')")
     cantidad_archivos = models.PositiveIntegerField(default=1, help_text="Aplica si el campo es tipo archivo")
-
     orden = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return f"{self.etiqueta} ({self.tipo})"
 
+ESTATUS = [
+    ('1', 'Creada'),
+    ('2', 'En proceso'),
+    ('3', 'Terminada'),
+    ('4', 'Cancelada'),
+]
+
 class Solicitud(models.Model):
-    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+    usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     tipo_solicitud = models.ForeignKey(TipoSolicitud, on_delete=models.CASCADE)
     folio = models.CharField(max_length=20, unique=True)
     fecha_creacion = models.DateTimeField(auto_now_add=True)
+    estatus = models.CharField(max_length=1, choices=ESTATUS, default='1')  # <--- CAMPO AÑADIDO
 
     def __str__(self):
-        return f"{self.folio}" #aqui irian los ticke, SI TUVIERA UNO
+        return f"{self.folio}"
 
 class RespuestaCampo(models.Model):
     solicitud = models.ForeignKey(Solicitud, on_delete=models.CASCADE, related_name='respuestas')
@@ -65,7 +70,6 @@ class RespuestaCampo(models.Model):
 
     def __str__(self):
         return f"Respuesta {self.campo.nombre} -> {self.valor}"
-
 
 def upload_path(instance, filename):
     return f"tickets/{instance.solicitud.folio}/{filename}"
@@ -79,13 +83,8 @@ class ArchivoAdjunto(models.Model):
     def __str__(self):
         return f"Archivo {self.archivo.name}"
 
-ESTATUS = [
-    ('1', 'Creada'),
-    ('2', 'En proceso'),
-    ('3', 'Terminada'),
-    ('4', 'Cancelada'),
-]
 class SeguimientoSolicitud(models.Model):
+    solicitud = models.ForeignKey(Solicitud, on_delete=models.CASCADE, related_name='seguimientos')
     fecha_creacion = models.DateTimeField(auto_now_add=True)
     observaciones = models.TextField(blank=True)
     estatus = models.CharField(max_length=1, choices=ESTATUS)
