@@ -9,7 +9,7 @@ services:
     depends_on:
       - db
     ports:
-      - 8080:8080
+      - 8000:8000
     volumes:
       - ./app:/app 
     working_dir: /app
@@ -18,6 +18,7 @@ services:
             cd /app/solicitudes &&
             . /env/bin/activate &&
             python3 manage.py migrate &&
+            python3 manage.py create_default_admin &&
             python3 manage.py runserver 0.0.0.0:8000"
     environment:
       DB_NAME: ${DB_NAME}
